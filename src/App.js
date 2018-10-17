@@ -3,6 +3,8 @@ import logo from './mainStreetAuto.svg';
 import axios from 'axios';
 import './App.css';
 
+// API reference "https://app.swaggerhub.com/apis/DevMountain/Joes-Auto/1.0.0"
+
 // Toast notification dependencies
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -12,7 +14,8 @@ class App extends Component {
 
     this.state = {
       vehiclesToDisplay: [],
-      buyersToDisplay: []
+      buyersToDisplay: [],
+      baseURL: "https://joes-autos.herokuapp.com/api"
     };
 
     this.getVehicles = this.getVehicles.bind(this);
@@ -28,38 +31,110 @@ class App extends Component {
     this.deleteBuyer = this.deleteBuyer.bind(this);
   }
 
-  getVehicles() {
-    // axios (GET)
-    // setState with response -> vehiclesToDisplay
+componentDidMount() {
+  this.getVehicles()
+}
+
+
+
+
+
+  getVehicles(value) {
+    // axios.get('https://joes-autos.herokuapp.com/api/vehicles')
+    //       .then( results => {
+    //         toast.success("Successfully got vehicles...");
+    //         this.setState ({"vehiclesToDisplay": results.data});
+    //       }).catch( () => toast.error("Failed at fetching Vehicles"));
+    let promise = axios.get(`${this.state.baseURL}/vehicles`)
+    console.log('first')
+                promise.then((res) => {
+                  console.log('data is back')
+                  this.setState({
+                    vehiclesToDisplay: res.data
+                  })
+
+                })
+                console.log('last')
   }
 
   getPotentialBuyers() {
     // axios (GET)
     // setState with response -> buyersToDisplay
-  }
+  //   axios.get('https://joes-autos.herokuapp.com/api/vehicles')
+  //         .then( results => {
+  //           toast.success("Successfully got vehicles...");
+  //           this.setState ({"buyersToDisplay": results.data});
+  //         }).catch( () => toast.error("Failed at fetching Buyers"));
+  // }
+  let promise = axios.get(`${this.state.baseURL}/buyers`)
+  console.log('first')
+                promise.then((res) => {
+                  this.setState({
+                    buyersToDisplay: res.data
+                  })
+                })}
 
   sellCar(id) {
     // axios (DELETE)
     // setState with response -> vehiclesToDisplay
-  }
+  //   axios.delete(`https://joes-autos.herokuapp.com/api/vehicles/${ id }`)
+  //         .then( results => {
+  //           toast.success("Successfully sold car...");
+  //   this.setState ({"vehiclesToDisplay": results.data.vehicles});
+
+  //   }).catch( () => toast.error("Failed at selling car"));
+  // }
+let promise = axios.delete(`${this.state.baseURL}/vehicles/${id}`)
+console.log('just deleted it')
+              promise.then((res) => {
+                this.setState({
+                  vehiclesToDisplay: res.data.vehicles
+                })
+              })
+}
 
   filterByMake() {
     let make = this.selectedMake.value;
-
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    axios.get("https://app.swaggerhub.com/apis/DevMountain/Joes-Auto/1.0.0")
+    .then( results => {
+      toast.success("Successfully got vehicles...");
+      this.setState ({"vehiclesToDisplay": results.data.vehicles});
+    }).catch( () => toast.error("Failed at fetching Vehicles"));
   }
 
   filterByColor() {
     let color = this.selectedColor.value;
-
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    axios.get("https://app.swaggerhub.com/apis/DevMountain/Joes-Auto/1.0.0")
+          .then( results => {
+            toast.success("Successfully got vehicles...");
+            this.setState ({"vehiclesToDisplay": results.data.vehicles});
+          }).catch( () => toast.error("Failed at fetching Vehicles"));
   }
 
   updatePrice(priceChange, id) {
     // axios (PUT)
     // setState with response -> vehiclesToDisplay
+  //   axios.put(`https://joes-autos.herokuapp.com/api/vehicles/${ id }/${ priceChange }`)
+  //         .then(results => {
+            
+  //           toast.success("Successfully updated price...");
+  //           this.setState ({"vehiclesToDisplay": results.data.vehicles});
+
+  //         }).catch( () => toast.error("Failed at fetching Vehicles"));
+
+  // }
+
+let promise = axios.put(`${this.state.baseURL}/vehicles/${id}/${priceChange}`)
+
+                promise.then((res) => {
+                  this.setState({
+                    vehiclesToDisplay: res.data.vehicles
+                  })
+                })
   }
 
   addCar() {
@@ -70,12 +145,27 @@ class App extends Component {
       year: this.year.value,
       price: this.price.value
     };
-
     // axios (POST)
     // setState with response -> vehiclesToDisplay
-  }
+  //   axios.post('https://joes-autos.herokuapp.com/api/vehicles', newCar)
+  //         .then(results => {      
+  //         toast.success("Successfully added vehicle...");
+  //         this.setState ({"vehiclesToDisplay": results.data.vehicles});
+  //   }).catch( () => toast.error("Failed at adding Vehicles"));
+  // }
+let promise = axios.post(`${this.state.baseURL}/vehicles`, newCar)
+            promise.then(res => {
+                this.setState({
+                    vehiclesToDisplay: res.data.vehicles
+  })
+})
 
-  addBuyer() {
+
+
+
+
+  }
+addBuyer() {
     let newBuyer = {
       name: this.name.value,
       phone: this.phone.value,
